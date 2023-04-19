@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       builder: (context, child) => MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          fontFamily: GoogleFonts.zillaSlab().fontFamily,
+          fontFamily: GoogleFonts.alike().fontFamily,
         ),
         home: SplashScreen(),
       ),

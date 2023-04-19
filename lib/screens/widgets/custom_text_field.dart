@@ -47,6 +47,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
         color: Color(0xFF747688),
       ),
       initialValue: widget.initiatext,
+      cursorColor: Colors.black,
       decoration: InputDecoration(
         //labelText: widget.text,
         filled: true,
@@ -58,7 +59,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
           borderRadius: BorderRadius.circular(12.r),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Color(0xFFE4DFDF), width: 1),
+          borderSide: BorderSide(color: Colors.black, width: 1.5),
           borderRadius: BorderRadius.circular(12.r),
         ),
         enabled: widget.textedit ?? true,

@@ -2,6 +2,7 @@
 import 'package:embulance/screens/login_screen/login_screen.dart';
 import 'package:embulance/screens/widgets/button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -19,6 +20,7 @@ class _SplashScreenState extends State<SplashScreen> {
         bottomNavigationBar: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Button(
+              color: Colors.black,
               name: 'Get Started',
               width: 320.w,
               onTap: () {
@@ -30,7 +32,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 );
               }),
         ),
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.white,
         body: Center(
           child: Column(
             children: [
@@ -38,7 +40,7 @@ class _SplashScreenState extends State<SplashScreen> {
               Text(
                 'Human Savior',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.red,
                   fontSize: 30.sp,
                   fontWeight: FontWeight.w800,
                 ),
@@ -47,13 +49,13 @@ class _SplashScreenState extends State<SplashScreen> {
               Image.asset(
                 'assets/images/aa.png',
                 scale: 2.5,
-                color: Colors.white,
+                color: Colors.red,
               ),
               SizedBox(height: 45.h),
               Text(
                 'Ready to Serve You',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.red,
                   fontSize: 32.sp,
                   fontWeight: FontWeight.w800,
                 ),

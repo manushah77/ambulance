@@ -5,7 +5,12 @@ class Button extends StatefulWidget {
   String name;
   double width;
   Function onTap;
-  Button({required this.name, required this.width, required this.onTap});
+  Color color;
+  Button(
+      {required this.name,
+      required this.width,
+      required this.onTap,
+      required this.color});
 
   @override
   State<Button> createState() => _ButtonState();
@@ -31,7 +36,7 @@ class _ButtonState extends State<Button> {
       ),
       height: 50.h,
       minWidth: widget.width,
-      color: Colors.black,
+      color: widget.color,
     );
   }
 }

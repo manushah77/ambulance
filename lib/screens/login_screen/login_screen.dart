@@ -1,3 +1,4 @@
+import 'package:embulance/screens/login_screen/detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
@@ -81,7 +82,18 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(
                 height: 20.h,
               ),
-              Button(name: 'Continue', width: 320.w, onTap: () {}),
+              Button(
+                  color: Colors.black,
+                  name: 'Continue',
+                  width: 320.w,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DetailScren(),
+                      ),
+                    );
+                  }),
               SizedBox(
                 height: 20.h,
               ),
