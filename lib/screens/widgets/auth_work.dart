@@ -16,7 +16,7 @@ class AuthWork {
         lname: user.displayName.toString(),
         phone: '',
         email: user.email.toString(),
-        image: '',
+        image: user.photoURL.toString(),
         pushToken: '');
 
     return await firestore

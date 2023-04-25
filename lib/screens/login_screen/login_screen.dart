@@ -20,6 +20,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final formKey = GlobalKey<FormState>();
   TextEditingController phoneController = TextEditingController();
   UserData? userdata;
 
@@ -29,6 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Scaffold(
         backgroundColor: Colors.white,
         body: Form(
+          key: formKey,
           child: SingleChildScrollView(
             child: Column(
               children: [
@@ -63,7 +65,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: Colors.black,
                       ),
                       cursorColor: Colors.black,
-                      // controller: phoneController,
+                      controller: phoneController,
+                      validator: (_) {
+                        if (_ == null || _ == '') {
+                          return 'Enter number';
+                        }
+                      },
                       decoration: InputDecoration(
                         labelStyle: TextStyle(
                           color: Colors.black,
@@ -100,7 +107,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     name: 'Continue',
                     width: 320.w,
                     onTap: () {
-                      verifyPhone();
+                      if (formKey.currentState!.validate()) {
+                        verifyPhone();
+                      }
+
                       // Navigator.push(
                       //   context,
                       //   MaterialPageRoute(
