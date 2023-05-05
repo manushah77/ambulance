@@ -7,7 +7,7 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1093873313986:android:4c5936d649e025f390335b",
+        "mobilesdk_app_id": "1:1093873313986:android:67eb1fa4a60026fb90335b",
         "android_client_info": {
           "package_name": "com.example.embulance"
         }
@@ -22,7 +22,7 @@
           }
         },
         {
-          "client_id": "1093873313986-l7tqnbhm1254q098jue14ukvbo0ug8k9.apps.googleusercontent.com",
+          "client_id": "1093873313986-uft18cqa9phkjobuovd6r9b3v0lvh10g.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
