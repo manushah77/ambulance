@@ -55,11 +55,12 @@ class _DetailScrenState extends State<DetailScren> {
                   final User user = auth.currentUser!;
                   UserData userdata = UserData(
                       id: user.uid,
-                      fname: user.displayName.toString(),
-                      lname: user.displayName.toString(),
+                      fname: fnameC.text.toString(),
+                      lname: lnameC.text.toString(),
                       phone: user.phoneNumber.toString(),
-                      // email: user.email.toString(),
-                      image: '',
+                      email: '',
+                      image:
+                          'https://i.pinimg.com/originals/3c/0f/26/3c0f26341e7c1a53ba0212ae6fce4d27.png',
                       pushToken: '');
                   return await FirebaseFirestore.instance
                       .collection('user')

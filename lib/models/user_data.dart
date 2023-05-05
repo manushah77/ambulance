@@ -6,6 +6,7 @@ class UserData {
   String? id;
   String? email;
   String? pushToken;
+  String? location;
 
   UserData({
     this.fname,
@@ -15,6 +16,7 @@ class UserData {
     this.id,
     this.image,
     this.pushToken,
+    this.location
   });
 
   UserData.fromMap(Map<String, dynamic> map) {
@@ -25,6 +27,7 @@ class UserData {
     pushToken = map['pushToken'] ?? '';
     fname = map['firstName'] ?? '';
     lname = map['lastName'] ?? '';
+    location = map['currentLocation'] ?? '';
   }
 
   Map<String, dynamic> toMap() {
@@ -36,6 +39,8 @@ class UserData {
     _data['pushToken'] = pushToken;
     _data['id'] = id;
     _data['email'] = email;
+    _data['currentLocation'] = location;
+
     return _data;
   }
 }

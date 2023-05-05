@@ -1,5 +1,9 @@
+import 'package:embulance/screens/home_screens/map_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../widgets/button.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -32,41 +36,51 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(
               height: 30.h,
             ),
-            ListTile(
-              leading: Container(
-                height: 45.h,
-                width: 45.w,
-                decoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.2),
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: Icon(
-                    Icons.location_pin,
-                    color: Colors.black,
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CustomGoogleMap(),
+                  ),
+                );
+              },
+              child: ListTile(
+                leading: Container(
+                  height: 45.h,
+                  width: 45.w,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.withOpacity(0.2),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: Icon(
+                      Icons.location_pin,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
-              ),
-              title: Text(
-                'Saeed Center Kacheri Road',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w600,
+                title: Text(
+                  'Saeed Center Kacheri Road',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-              ),
-              subtitle: Text(
-                'Sahiwal, District, Punjab',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 13.sp,
-                  fontWeight: FontWeight.w300,
+                subtitle: Text(
+                  'Sahiwal, District, Punjab',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w300,
+                  ),
                 ),
-              ),
-              trailing: Icon(
-                Icons.arrow_forward_ios,
-                color: Colors.grey,
-                opticalSize: 10,
+                trailing: Icon(
+                  Icons.arrow_forward_ios,
+                  color: Colors.grey,
+                  opticalSize: 10,
+                ),
               ),
             ),
             SizedBox(
@@ -190,6 +204,39 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ],
                     )),
+              ],
+            ),
+
+            SizedBox(
+              height: 300.h,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Button(
+                    color: Colors.black,
+                    name: 'Request Ambulance',
+                    width: 100.w,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CustomGoogleMap(),
+                        ),
+                      );
+                    }),
+                Button(
+                    color: Colors.black,
+                    name: 'Drive Ambulance',
+                    width: 100.w,
+                    onTap: () {
+                      // Navigator.pushReplacement(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) => LoginScreen(),
+                      //   ),
+                      // );
+                    }),
               ],
             ),
           ],

@@ -1,9 +1,14 @@
 // ignore_for_file: prefer_const_constructors, use_build_context_synchronously
+import 'dart:async';
+
 import 'package:embulance/screens/login_screen/login_screen.dart';
 import 'package:embulance/screens/widgets/button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../home_screens/bottombar/bottom_nav_bar.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -13,6 +18,26 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    FirebaseAuth.instance.userChanges().listen(
+      (user) {
+        Timer(
+          Duration(seconds: 3),
+          () => Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (BuildContext context) =>
+                  FirebaseAuth.instance.currentUser != null
+                      ? BottomBar()
+                      : LoginScreen(),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(

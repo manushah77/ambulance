@@ -282,7 +282,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   if (user != null) {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => DetailScren()),
+                      MaterialPageRoute(builder: (context) => BottomBar()),
                     );
                   } else {
                     Navigator.of(context).pop();
