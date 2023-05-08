@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:embulance/screens/admin_home_screens/bottombar/user_detail.dart';
 import 'package:embulance/screens/home_screens/map_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../widgets/button.dart';
+import 'package:geocoding/geocoding.dart';
+import '../../models/user_data.dart';
 
 class AdminHomeScreen extends StatefulWidget {
   const AdminHomeScreen({super.key});
@@ -13,233 +15,264 @@ class AdminHomeScreen extends StatefulWidget {
 }
 
 class _AdminHomeScreenState extends State<AdminHomeScreen> {
+  UserData? userData;
+  List<UserData> userdata = [];
+
+  double? latitue;
+  double? longitute;
+  List<Placemark>? placemark;
+
+  final user = FirebaseAuth.instance.currentUser!;
+
+  getUserData() async {
+    QuerySnapshot res = await FirebaseFirestore.instance
+        .collection('Driver')
+        .where('id', isEqualTo: user.uid)
+        .get();
+    if (res.docs.isNotEmpty) {
+      setState(() {
+        userData =
+            UserData.fromMap(res.docs.first.data() as Map<String, dynamic>);
+        latitue = userData!.latituelocation;
+        longitute = userData!.longitudelocation;
+        getLocation();
+      });
+    }
+
+    QuerySnapshot rest =
+        await FirebaseFirestore.instance.collection('user').get();
+    if (rest.docs.isNotEmpty) {
+      setState(() {
+        userdata = rest.docs
+            .map((e) => UserData.fromMap(e.data() as Map<String, dynamic>))
+            .toList();
+        latitue = userData!.latituelocation;
+        longitute = userData!.longitudelocation;
+        getLocation();
+      });
+    }
+  }
+
+  getLocation() async {
+    placemark = await placemarkFromCoordinates(
+      latitue!.toDouble(),
+      longitute!.toDouble(),
+    );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getUserData();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: SafeArea(
+        child: Scaffold(
           backgroundColor: Colors.white,
-          elevation: 0,
-          title: Text(
-            'HOME',
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 35.sp,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-        body: Column(
-          children: [
-            SizedBox(
-              height: 30.h,
-            ),
-            InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CustomGoogleMap(),
-                  ),
-                );
-              },
-              child: ListTile(
-                leading: Container(
-                  height: 45.h,
-                  width: 45.w,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.withOpacity(0.2),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Center(
-                    child: Icon(
-                      Icons.location_pin,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-                title: Text(
-                  'Saeed Center Kacheri Road',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                subtitle: Text(
-                  'Sahiwal, District, Punjab',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-                trailing: Icon(
-                  Icons.arrow_forward_ios,
-                  color: Colors.grey,
-                  opticalSize: 10,
-                ),
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            backgroundColor: Colors.white,
+            elevation: 0,
+            title: Text(
+              'ADMIN HOME',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 35.sp,
+                fontWeight: FontWeight.w600,
               ),
             ),
-            SizedBox(
-              height: 30.h,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 22.0, right: 22),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Suggestion',
+          ),
+          body: Column(
+            children: [
+              SizedBox(
+                height: 30.h,
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CustomGoogleMap(),
+                    ),
+                  );
+                },
+                child: ListTile(
+                  leading: Container(
+                    height: 45.h,
+                    width: 45.w,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.withOpacity(0.2),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.location_pin,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  title: Text(
+                    // '',
+                    placemark == null
+                        ? 'Your Location'
+                        : '${placemark![0].street}',
                     style: TextStyle(
                       color: Colors.black,
-                      fontSize: 21.sp,
+                      fontSize: 18.sp,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  Text(
-                    'See All',
+                  subtitle: Text(
+                    placemark == null
+                        ? 'Your Adress'
+                        : '${placemark![0].subAdministrativeArea} , ${placemark![0].locality}, ${placemark![0].administrativeArea}, ${placemark![0].country}',
                     style: TextStyle(
                       color: Colors.black,
-                      fontSize: 15.sp,
-                      fontWeight: FontWeight.w400,
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w300,
                     ),
                   ),
-                ],
+                  trailing: Icon(
+                    Icons.arrow_forward_ios,
+                    color: Colors.grey,
+                    opticalSize: 10,
+                  ),
+                ),
               ),
-            ),
-            SizedBox(
-              height: 30.h,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Container(
-                    height: 105.h,
-                    width: 170.w,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(10),
+              SizedBox(
+                height: 30.h,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 22.0, right: 22),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Request',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 21.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 10.h,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Image.asset(
-                              'assets/images/ambulance.png',
-                              height: 65.h,
-                              width: 65.w,
-                            ),
-                            SizedBox(
-                              width: 15.w,
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              width: 15.w,
-                            ),
-                            Text(
-                              'Ambulance',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 15.sp,
-                                fontWeight: FontWeight.w400,
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 30.h,
+              ),
+              GridView.builder(
+                  physics: ScrollPhysics(),
+                  itemCount: userdata.length,
+                  shrinkWrap: true,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 1.5 / 1,
+                  ),
+                  itemBuilder: (BuildContext ctx, indexx) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => UserDetailScreen(
+                                nam: userdata[indexx].fname,
+                                img: userdata[indexx].image,
+                                latitetute: userdata[indexx].latituelocation,
+                                longitute: userdata[indexx].longitudelocation,
+                                email: userdata[indexx].email,
+                                phone: userdata[indexx].phone,
+                                id: userdata[indexx].id,
                               ),
                             ),
-                          ],
-                        ),
-                      ],
-                    )),
-
-                // 2nd container
-                Container(
-                    height: 105.h,
-                    width: 170.w,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 10.h,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Image.asset(
-                              'assets/images/ambulance.png',
-                              height: 65.h,
-                              width: 65.w,
+                          );
+                        },
+                        child: Container(
+                            height: 105.h,
+                            width: 170.w,
+                            decoration: BoxDecoration(
+                              color: Colors.grey.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                            SizedBox(
-                              width: 15.w,
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              width: 15.w,
-                            ),
-                            Text(
-                              'Ambulance',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 15.sp,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    )),
-              ],
-            ),
-
-            // SizedBox(
-            //   height: 300.h,
-            // ),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            //   children: [
-            //     Button(
-            //         color: Colors.black,
-            //         name: 'Request Ambulance',
-            //         width: 100.w,
-            //         onTap: () {
-            //           Navigator.push(
-            //             context,
-            //             MaterialPageRoute(
-            //               builder: (context) => CustomGoogleMap(),
-            //             ),
-            //           );
-            //         }),
-            //     Button(
-            //         color: Colors.black,
-            //         name: 'Drive Ambulance',
-            //         width: 100.w,
-            //         onTap: () {
-            //           // Navigator.pushReplacement(
-            //           //   context,
-            //           //   MaterialPageRoute(
-            //           //     builder: (context) => LoginScreen(),
-            //           //   ),
-            //           // );
-            //         }),
-            //   ],
-            // ),
-          ],
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  height: 10.h,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Image.network(
+                                      '${userdata[indexx].image}',
+                                      height: 65.h,
+                                      width: 65.w,
+                                    ),
+                                    SizedBox(
+                                      width: 15.w,
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 5.h,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      width: 15.w,
+                                    ),
+                                    Text(
+                                      '${userdata[indexx].fname}',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 10.h,
+                                ),
+                                // Wrap(
+                                //   children: [
+                                //     Text(
+                                //       'Address is: ',
+                                //       style: TextStyle(
+                                //         color: Colors.black,
+                                //         fontSize: 16.sp,
+                                //         fontWeight: FontWeight.w400,
+                                //       ),
+                                //     ),
+                                //     SizedBox(
+                                //       width: 15.w,
+                                //     ),
+                                //     Text(
+                                //       placemarkOne == null
+                                //           ? ''
+                                //           : '${placemarkOne![indexx].street} ${placemarkOne![indexx].subAdministrativeArea} , ${placemarkOne![indexx].locality}, ${placemarkOne![indexx].administrativeArea}, ${placemarkOne![indexx].country}',
+                                //       style: TextStyle(
+                                //         color: Colors.black,
+                                //         fontSize: 16.sp,
+                                //         fontWeight: FontWeight.w400,
+                                //       ),
+                                //     ),
+                                //   ],
+                                // ),
+                              ],
+                            )),
+                      ),
+                    );
+                  }),
+            ],
+          ),
         ),
       ),
     );

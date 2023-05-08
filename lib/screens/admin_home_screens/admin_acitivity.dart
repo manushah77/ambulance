@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class ActivityScreen extends StatefulWidget {
-  const ActivityScreen({super.key});
+class AdminActivityScreen extends StatefulWidget {
+  const AdminActivityScreen({super.key});
 
   @override
-  State<ActivityScreen> createState() => _ActivityScreenState();
+  State<AdminActivityScreen> createState() => _AdminActivityScreenState();
 }
 
-class _ActivityScreenState extends State<ActivityScreen> {
+class _AdminActivityScreenState extends State<AdminActivityScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(

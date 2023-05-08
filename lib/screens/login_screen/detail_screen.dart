@@ -59,6 +59,8 @@ class _DetailScrenState extends State<DetailScren> {
                       lname: lnameC.text.toString(),
                       phone: user.phoneNumber.toString(),
                       email: '',
+                      longitudelocation:  0.0,
+                      latituelocation:  0.0,
                       image:
                           'https://i.pinimg.com/originals/3c/0f/26/3c0f26341e7c1a53ba0212ae6fce4d27.png',
                       pushToken: '');

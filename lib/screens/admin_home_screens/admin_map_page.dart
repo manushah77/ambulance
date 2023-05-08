@@ -8,12 +8,12 @@ import 'package:location/location.dart';
 
 import '../../models/user_data.dart';
 
-class CustomGoogleMap extends StatefulWidget {
+class AdminCustomGoogleMap extends StatefulWidget {
   @override
-  State<CustomGoogleMap> createState() => _CustomGoogleMapState();
+  State<AdminCustomGoogleMap> createState() => _AdminCustomGoogleMapState();
 }
 
-class _CustomGoogleMapState extends State<CustomGoogleMap> {
+class _AdminCustomGoogleMapState extends State<AdminCustomGoogleMap> {
   LatLng _intitialcamerapositon = LatLng(30.6952325, 73.0904565);
 
   // static const LatLng sourceLocation = LatLng(20.597, 78.9629);
@@ -41,22 +41,22 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
     });
   }
 
-  List<Marker> marker = [];
-  List<Marker> listMarker = const [
-    Marker(
-      markerId: MarkerId('1'),
-      position: LatLng(20.597, 78.9629),
-      infoWindow: InfoWindow(title: 'ISB'),
-      icon: BitmapDescriptor.defaultMarker,
-    ),
-
-  ];
+  // List<Marker> marker = [];
+  // List<Marker> listMarker = const [
+  //   Marker(
+  //     markerId: MarkerId('1'),
+  //     position: LatLng(20.597, 78.9629),
+  //     infoWindow: InfoWindow(title: 'ISB'),
+  //     icon: BitmapDescriptor.defaultMarker,
+  //   ),
+  //
+  // ];
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    marker.addAll(listMarker);
+    // marker.addAll(listMarker);
   }
 
   @override
@@ -95,7 +95,7 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
               onMapCreated: _onMapCreated,
               myLocationEnabled: true,
               mapToolbarEnabled: true,
-              markers: Set<Marker>.of(marker),
+              // markers: Set<Marker>.of(marker),
             ),
             Positioned(
               bottom: 0,
@@ -111,6 +111,7 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
                     await location.getLocation().then((value) {
                       setState(() async {
                         print('current location is:');
+                        print('${value.latitude} , ${value.longitude}');
 
                         // checkOutProvider.setLocation = value;
                         final FirebaseAuth auth = FirebaseAuth.instance;
@@ -121,13 +122,12 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
                             lname: user.displayName,
                             phone: user.phoneNumber.toString(),
                             email: user.email,
-                            latituelocation: value.latitude.toString(),
-                            longitudelocation:value. longitude.toString() ,
-                            image:
-                            'https://i.pinimg.com/originals/3c/0f/26/3c0f26341e7c1a53ba0212ae6fce4d27.png',
+                            latituelocation: 0.0,
+                            longitudelocation: 0.0,
+                            image: 'https://cdn.iconscout.com/icon/free/png-256/free-ambulance-driver-2349770-1955457.png',
                             pushToken: '');
                         return await FirebaseFirestore.instance
-                            .collection('user')
+                            .collection('Driver')
                             .doc(user.uid)
                             .set(userdata.toMap())
                             .then((value) {

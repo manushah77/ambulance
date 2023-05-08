@@ -15,7 +15,6 @@ class _BottomBar extends State<BottomBar> {
 
   static List<Widget> _widgetOptions = <Widget>[
     HomeScreen(),
-    ServiceScreen(),
     ActivityScreen(),
     AccountScreen(),
   ];
@@ -39,10 +38,7 @@ class _BottomBar extends State<BottomBar> {
             icon: new Icon(Icons.home),
             label: 'Home',
           ),
-          BottomNavigationBarItem(
-            icon: new Icon(Icons.miscellaneous_services),
-            label: 'Servies',
-          ),
+
           BottomNavigationBarItem(
             icon: new Icon(Icons.volunteer_activism),
             label: 'Activity',
@@ -52,7 +48,7 @@ class _BottomBar extends State<BottomBar> {
             label: 'Account',
           ),
         ],
-        selectedFontSize: 12,
+        selectedFontSize: 15,
         unselectedFontSize: 12,
         selectedItemColor: Colors.black,
         unselectedItemColor: Colors.grey[500],

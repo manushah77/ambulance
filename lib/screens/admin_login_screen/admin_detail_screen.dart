@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:embulance/models/user_data.dart';
+import 'package:embulance/screens/admin_home_screens/bottombar/admin_bottom_nav_bar.dart';
 import 'package:embulance/screens/home_screens/bottombar/bottom_nav_bar.dart';
 import 'package:embulance/screens/widgets/auth_work.dart';
 import 'package:embulance/screens/widgets/button.dart';
@@ -8,14 +9,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class DetailScren extends StatefulWidget {
-  const DetailScren({super.key});
+class AdminDetailScren extends StatefulWidget {
+  const AdminDetailScren({super.key});
 
   @override
-  State<DetailScren> createState() => _DetailScrenState();
+  State<AdminDetailScren> createState() => _AdminDetailScrenState();
 }
 
-class _DetailScrenState extends State<DetailScren> {
+class _AdminDetailScrenState extends State<AdminDetailScren> {
   final formKey = GlobalKey<FormState>();
   TextEditingController fnameC = TextEditingController();
   TextEditingController lnameC = TextEditingController();
@@ -58,19 +59,20 @@ class _DetailScrenState extends State<DetailScren> {
                       fname: fnameC.text.toString(),
                       lname: lnameC.text.toString(),
                       phone: user.phoneNumber.toString(),
-                      email: '',
-                      image:
-                          'https://i.pinimg.com/originals/3c/0f/26/3c0f26341e7c1a53ba0212ae6fce4d27.png',
+                      email: user.email,
+                      latituelocation:  0.0,
+                      longitudelocation: 0.0 ,
+                      image: 'https://cdn.iconscout.com/icon/free/png-256/free-ambulance-driver-2349770-1955457.png',
                       pushToken: '');
                   return await FirebaseFirestore.instance
-                      .collection('user')
+                      .collection('Driver')
                       .doc(user.uid)
                       .set(userdata.toMap())
                       .then((value) {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => BottomBar(),
+                        builder: (context) => AdminBottomBar(),
                       ),
                     );
                   });

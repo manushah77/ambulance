@@ -2,6 +2,7 @@
 import 'dart:async';
 
 import 'package:embulance/screens/login_screen/login_screen.dart';
+import 'package:embulance/screens/welcome_screen.dart';
 import 'package:embulance/screens/widgets/button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -21,21 +22,22 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    FirebaseAuth.instance.userChanges().listen(
-      (user) {
-        Timer(
-          Duration(seconds: 3),
-          () => Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (BuildContext context) =>
-                  FirebaseAuth.instance.currentUser != null
-                      ? BottomBar()
-                      : LoginScreen(),
-            ),
-          ),
-        );
-      },
-    );
+    // FirebaseAuth.instance.userChanges().listen(
+    //   (user) {
+    //     Timer(
+    //       Duration(seconds: 3),
+    //       () => Navigator.of(context).pushReplacement(
+    //         MaterialPageRoute(
+    //           builder: (BuildContext context) =>
+    //
+    //               FirebaseAuth.instance.currentUser != null
+    //                   ? BottomBar()
+    //                   : WelcomeScreen(),
+    //         ),
+    //       ),
+    //     );
+    //   },
+    // );
   }
 
   @override
@@ -52,7 +54,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => LoginScreen(),
+                    builder: (context) => WelcomeScreen(),
                   ), // Replace "HomeScreen()" with your app's home screen.
                 );
               }),

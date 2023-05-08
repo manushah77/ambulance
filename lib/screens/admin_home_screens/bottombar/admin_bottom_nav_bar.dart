@@ -1,3 +1,5 @@
+import 'package:embulance/screens/admin_home_screens/account_screens/admin_account.dart';
+import 'package:embulance/screens/admin_home_screens/account_screens/admin_profile.dart';
 import 'package:embulance/screens/home_screens/account_screens/account.dart';
 import 'package:embulance/screens/home_screens/acitivity.dart';
 import 'package:embulance/screens/home_screens/home.dart';
@@ -8,18 +10,17 @@ import 'package:flutter/material.dart';
 import '../admin_acitivity.dart';
 import '../admin_home.dart';
 
-class BottomBar extends StatefulWidget {
+class AdminBottomBar extends StatefulWidget {
   @override
   _BottomBar createState() => _BottomBar();
 }
 
-class _BottomBar extends State<BottomBar> {
+class _BottomBar extends State<AdminBottomBar> {
   int _selectedIndex = 0;
 
   static List<Widget> _widgetOptions = <Widget>[
     AdminHomeScreen(),
-    AdminActivityScreen(),
-    AdminActivityScreen(),
+    AdminAccountScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -45,10 +46,10 @@ class _BottomBar extends State<BottomBar> {
           //   icon: new Icon(Icons.miscellaneous_services),
           //   label: 'Servies',
           // ),
-          BottomNavigationBarItem(
-            icon: new Icon(Icons.volunteer_activism),
-            label: 'Activity',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: new Icon(Icons.volunteer_activism),
+          //   label: 'Activity',
+          // ),
           BottomNavigationBarItem(
             icon: new Icon(Icons.person),
             label: 'Account',

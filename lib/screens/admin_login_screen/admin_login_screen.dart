@@ -1,3 +1,5 @@
+import 'package:embulance/screens/admin_home_screens/bottombar/admin_bottom_nav_bar.dart';
+import 'package:embulance/screens/admin_login_screen/admin_detail_screen.dart';
 import 'package:embulance/screens/login_screen/detail_screen.dart';
 import 'package:embulance/screens/widgets/auth_work.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,14 +14,14 @@ import '../../models/user_data.dart';
 import '../widgets/alert_dialog_widget.dart';
 import '../widgets/button.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class AdminLoginScreen extends StatefulWidget {
+  const AdminLoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<AdminLoginScreen> createState() => _AdminLoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _AdminLoginScreenState extends State<AdminLoginScreen> {
   final formKey = GlobalKey<FormState>();
   TextEditingController phoneController = TextEditingController();
   UserData? userdata;
@@ -203,13 +205,13 @@ class _LoginScreenState extends State<LoginScreen> {
         if ((await AuthWork.userExists())) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => BottomBar()),
+            MaterialPageRoute(builder: (context) => AdminBottomBar()),
           );
         } else {
-          await AuthWork.createUser().then((value) {
+          await AuthWork.createDriver().then((value) {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => BottomBar()),
+              MaterialPageRoute(builder: (context) => AdminBottomBar()),
             );
           });
         }
@@ -259,7 +261,8 @@ class _LoginScreenState extends State<LoginScreen> {
             obscureText: false,
             animationType: AnimationType.fade,
             animationDuration: Duration(milliseconds: 300),
-            errorAnimationController: errorController, // Pas// s it here
+            errorAnimationController: errorController,
+            // Pas// s it here
             pinTheme: PinTheme(
               shape: PinCodeFieldShape.underline,
               borderRadius: BorderRadius.circular(5),
@@ -277,14 +280,17 @@ class _LoginScreenState extends State<LoginScreen> {
           contentPadding: EdgeInsets.all(10.0),
           actions: <Widget>[
             MaterialButton(
-                onPressed: () {
-                  var user = FirebaseAuth.instance.currentUser;
-                  if (user != null) {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => BottomBar()),
-                    );
-                  } else {
+                onPressed: () async {
+                  // var user = FirebaseAuth.instance.currentUser;
+
+                    if ((await AuthWork.userExists())) {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AdminBottomBar()),
+                      );
+                    }
+                   else {
                     Navigator.of(context).pop();
                     signIn(smssent);
                   }
@@ -307,10 +313,10 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       await FirebaseAuth.instance.signInWithCredential(credential).then((user) {
         final User? users = FirebaseAuth.instance.currentUser;
-        AuthWork.createUserPhone();
+        AuthWork.createDriverUserPhone();
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => DetailScren()),
+          MaterialPageRoute(builder: (context) => AdminDetailScren()),
         );
       });
     } catch (e) {

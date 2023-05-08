@@ -6,7 +6,8 @@ class UserData {
   String? id;
   String? email;
   String? pushToken;
-  String? location;
+  double? latituelocation;
+  double? longitudelocation;
 
   UserData({
     this.fname,
@@ -16,7 +17,8 @@ class UserData {
     this.id,
     this.image,
     this.pushToken,
-    this.location
+    this.latituelocation,
+    this.longitudelocation,
   });
 
   UserData.fromMap(Map<String, dynamic> map) {
@@ -27,7 +29,8 @@ class UserData {
     pushToken = map['pushToken'] ?? '';
     fname = map['firstName'] ?? '';
     lname = map['lastName'] ?? '';
-    location = map['currentLocation'] ?? '';
+    longitudelocation = map['longitudeLocation'] ?? 0.0;
+    latituelocation = map['latitueLocation'] ?? 0.0;
   }
 
   Map<String, dynamic> toMap() {
@@ -39,7 +42,8 @@ class UserData {
     _data['pushToken'] = pushToken;
     _data['id'] = id;
     _data['email'] = email;
-    _data['currentLocation'] = location;
+    _data['longitudeLocation'] = longitudelocation;
+    _data['latitueLocation'] = latituelocation;
 
     return _data;
   }
