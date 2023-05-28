@@ -146,6 +146,7 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
                             email: user.email,
                             latituelocation: value.latitude,
                             longitudelocation:value. longitude,
+                            disease: userData!.disease,
                             image:
                             'https://i.pinimg.com/originals/3c/0f/26/3c0f26341e7c1a53ba0212ae6fce4d27.png',
                             pushToken: '');

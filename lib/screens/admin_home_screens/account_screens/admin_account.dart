@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:embulance/models/admin_model.dart';
+import 'package:embulance/screens/admin_home_screens/account_screens/admin_profile.dart';
 import 'package:embulance/screens/home_screens/account_screens/profile.dart';
 import 'package:embulance/screens/welcome_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,7 +18,7 @@ class AdminAccountScreen extends StatefulWidget {
 }
 
 class _AdminAccountScreenState extends State<AdminAccountScreen> {
-  UserData? userData;
+  AdminData? userData;
   final user = FirebaseAuth.instance.currentUser!;
   String name = '';
   String img = '';
@@ -31,7 +33,7 @@ class _AdminAccountScreenState extends State<AdminAccountScreen> {
     if (res.docs.isNotEmpty) {
       setState(() {
         userData =
-            UserData.fromMap(res.docs.first.data() as Map<String, dynamic>);
+            AdminData.fromMap(res.docs.first.data() as Map<String, dynamic>);
         name = userData!.fname!;
         phone = userData!.phone!;
         img = userData!.image!;
@@ -77,11 +79,15 @@ class _AdminAccountScreenState extends State<AdminAccountScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => UserProfile(
+                      builder: (context) => AdminProfile(
                         nam: '${userData!.fname}',
                         email: '${userData!.lname}',
                         id: '${userData!.id}',
                         img: '${userData!.image}',
+                        carModel: '${userData!.carModel}',
+                        carName: '${userData!.carName}',
+                        IdNumber: '${userData!.idCardNumber}',
+
                       ),
                     ),
                   );

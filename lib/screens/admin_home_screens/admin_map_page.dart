@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:embulance/models/admin_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -23,6 +24,26 @@ class _AdminCustomGoogleMapState extends State<AdminCustomGoogleMap> {
 
   Location location = Location();
   GoogleMapController? controller;
+
+  final user = FirebaseAuth.instance.currentUser!;
+  AdminData? adminData;
+
+  getUserData() async {
+    QuerySnapshot res = await FirebaseFirestore.instance
+        .collection('Driver')
+        .where('id', isEqualTo: user.uid)
+        .get();
+    if (res.docs.isNotEmpty) {
+      setState(() {
+        adminData=
+            AdminData.fromMap(res.docs.first.data() as Map<String, dynamic>);
+
+      });
+    }
+
+
+  }
+
 
   void _onMapCreated(GoogleMapController value) {
     controller = value;
@@ -56,6 +77,7 @@ class _AdminCustomGoogleMapState extends State<AdminCustomGoogleMap> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    getUserData();
     // marker.addAll(listMarker);
   }
 
@@ -116,14 +138,21 @@ class _AdminCustomGoogleMapState extends State<AdminCustomGoogleMap> {
                         // checkOutProvider.setLocation = value;
                         final FirebaseAuth auth = FirebaseAuth.instance;
                         final User user = auth.currentUser!;
-                        UserData userdata = UserData(
+                        AdminData userdata = AdminData(
                             id: user.uid,
                             fname: user.displayName,
                             lname: user.displayName,
-                            phone: user.phoneNumber.toString(),
+                            phone: adminData!.phone,
                             email: user.email,
-                            latituelocation: 0.0,
-                            longitudelocation: 0.0,
+                            latituelocation: value.latitude,
+                            longitudelocation: value.longitude,
+
+                            carDetail: adminData!.carDetail,
+                            carModel: adminData!.carModel,
+                            carName: adminData!.carName,
+                            idCardNumber:adminData!.idCardNumber,
+
+
                             image: 'https://cdn.iconscout.com/icon/free/png-256/free-ambulance-driver-2349770-1955457.png',
                             pushToken: '');
                         return await FirebaseFirestore.instance

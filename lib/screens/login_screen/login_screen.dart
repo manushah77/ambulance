@@ -11,6 +11,7 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 import '../../models/user_data.dart';
 import '../widgets/alert_dialog_widget.dart';
 import '../widgets/button.dart';
+import 'detail_screen_two.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -209,7 +210,7 @@ class _LoginScreenState extends State<LoginScreen> {
           await AuthWork.createUser().then((value) {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => BottomBar()),
+              MaterialPageRoute(builder: (context) => DetailScreenTwo()),
             );
           });
         }

@@ -19,6 +19,7 @@ class _DetailScrenState extends State<DetailScren> {
   final formKey = GlobalKey<FormState>();
   TextEditingController fnameC = TextEditingController();
   TextEditingController lnameC = TextEditingController();
+  TextEditingController diseaseC = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +62,7 @@ class _DetailScrenState extends State<DetailScren> {
                       email: '',
                       longitudelocation:  0.0,
                       latituelocation:  0.0,
+                      disease: diseaseC.text,
                       image:
                           'https://i.pinimg.com/originals/3c/0f/26/3c0f26341e7c1a53ba0212ae6fce4d27.png',
                       pushToken: '');
@@ -142,6 +144,17 @@ class _DetailScrenState extends State<DetailScren> {
                   child: TextFieldWidget(
                     text: 'Last Name',
                     controller: lnameC,
+                    validate: true,
+                  ),
+                ),
+                SizedBox(
+                  height: 20.h,
+                ),
+                SizedBox(
+                  width: 330.w,
+                  child: TextFieldWidget(
+                    text: 'Describe Disease',
+                    controller: diseaseC,
                     validate: true,
                   ),
                 ),

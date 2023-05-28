@@ -12,25 +12,30 @@ class AdminProfile extends StatefulWidget {
   String? phn;
   String? email;
   String? id;
-   AdminProfile({
-     this.img,
-     this.email,
-     this.nam,
-     this.phn,
-     this.id,
-});
+  String? carModel;
+  String? carName;
+  String? IdNumber;
+
+  AdminProfile(
+      {this.img,
+      this.email,
+      this.nam,
+      this.phn,
+      this.id,
+      this.carName,
+      this.carModel,
+      this.IdNumber});
 
   @override
   State<AdminProfile> createState() => _AdminProfileState();
 }
 
 class _AdminProfileState extends State<AdminProfile> {
-
   TextEditingController nameC = TextEditingController();
   TextEditingController phnC = TextEditingController();
-  TextEditingController emailC = TextEditingController();
+  TextEditingController carNumberC = TextEditingController();
+  TextEditingController carModel = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +70,8 @@ class _AdminProfileState extends State<AdminProfile> {
                     color: Colors.grey.withOpacity(0.2),
                     shape: BoxShape.circle,
                     image: DecorationImage(
-                        image: NetworkImage('${widget.img}'), fit: BoxFit.cover),
+                        image: NetworkImage('${widget.img}'),
+                        fit: BoxFit.cover),
                   ),
                 ),
                 SizedBox(
@@ -123,28 +129,115 @@ class _AdminProfileState extends State<AdminProfile> {
                   child: TextFieldWidget(
                     text: widget.email!,
                     validate: true,
-                    controller: emailC,
+                    controller: phnC,
                   ),
                 ),
                 SizedBox(
                   height: 25.h,
                 ),
-
+                Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 18.0),
+                      child: Text(
+                        'Car Number',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
                 SizedBox(
-                  height: 100.h,
+                  height: 15.h,
+                ),
+                SizedBox(
+                  width: 330.w,
+                  child: TextFieldWidget(
+                    text: widget.carModel!,
+                    validate: true,
+                    controller: carModel,
+                  ),
+                ),
+                SizedBox(
+                  height: 25.h,
+                ),
+                Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 18.0),
+                      child: Text(
+                        'Car Name',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 15.h,
+                ),
+                SizedBox(
+                  width: 330.w,
+                  child: TextFieldWidget(
+                    text: widget.carName!,
+                    validate: true,
+                    controller: carNumberC,
+                  ),
+                ),
+                SizedBox(
+                  height: 25.h,
+                ),
+                Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 18.0),
+                      child: Text(
+                        'Id Card Number',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 15.h,
+                ),
+                SizedBox(
+                  width: 330.w,
+                  child: TextFieldWidget(
+                    text: widget.IdNumber!,
+                    validate: true,
+                    textedit: false,
+                  ),
+                ),
+                SizedBox(
+                  height: 25.h,
+                ),
+                SizedBox(
+                  height: 50.h,
                 ),
                 Button(
                   name: 'Update',
                   width: 280.w,
-                  onTap: () async{
-                    if(_formKey.currentState!.validate())
-                    {
+                  onTap: () async {
+                    if (_formKey.currentState!.validate()) {
                       await FirebaseFirestore.instance
                           .collection('Driver')
                           .doc(widget.id)
                           .update({
                         "firstName": nameC.text,
-                        "lastName": emailC.text,
+                        "lastName": phnC.text,
+                        'carModel': carNumberC.text,
+                        'carName': carModel.text
                       });
 
                       Navigator.pushReplacement(
@@ -154,7 +247,6 @@ class _AdminProfileState extends State<AdminProfile> {
                         ),
                       );
                     }
-
                   },
                   color: Colors.black,
                 )

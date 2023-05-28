@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:embulance/screens/admin_home_screens/bottombar/user_detail.dart';
+import 'package:embulance/screens/admin_home_screens/bottombar/admin_detail_data_screen.dart';
+import 'package:embulance/screens/home_screens/bottombar/user_detail.dart';
 import 'package:embulance/screens/home_screens/map_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geocoding/geocoding.dart';
 import '../../models/user_data.dart';
+import 'admin_map_page.dart';
 
 class AdminHomeScreen extends StatefulWidget {
   const AdminHomeScreen({super.key});
@@ -39,8 +41,10 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
       });
     }
 
-    QuerySnapshot rest =
-        await FirebaseFirestore.instance.collection('user').get();
+    QuerySnapshot rest = await FirebaseFirestore.instance
+        .collection('Request')
+        .where('RequestId', isEqualTo: user.uid)
+        .get();
     if (rest.docs.isNotEmpty) {
       setState(() {
         userdata = rest.docs
@@ -97,7 +101,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => CustomGoogleMap(),
+                      builder: (context) => AdminCustomGoogleMap(),
                     ),
                   );
                 },
@@ -172,7 +176,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                   shrinkWrap: true,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
-                    childAspectRatio: 1.5 / 1,
+                    childAspectRatio: 1.3 / 1,
                   ),
                   itemBuilder: (BuildContext ctx, indexx) {
                     return Padding(
@@ -182,7 +186,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => UserDetailScreen(
+                              builder: (context) => AdminDataDetailScreen(
                                 nam: userdata[indexx].fname,
                                 img: userdata[indexx].image,
                                 latitetute: userdata[indexx].latituelocation,
@@ -228,12 +232,14 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                     SizedBox(
                                       width: 15.w,
                                     ),
-                                    Text(
-                                      '${userdata[indexx].fname}',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.w400,
+                                    Expanded(
+                                      child: Text(
+                                        '${userdata[indexx].fname}',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w400,
+                                        ),
                                       ),
                                     ),
                                   ],

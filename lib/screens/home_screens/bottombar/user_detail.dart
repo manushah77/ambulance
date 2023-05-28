@@ -1,7 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:embulance/screens/widgets/alert_dialog_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../../models/user_data.dart';
 
 class UserDetailScreen extends StatefulWidget {
   String? img;
@@ -11,16 +16,21 @@ class UserDetailScreen extends StatefulWidget {
   String? email;
   double? longitute;
   double? latitetute;
+  String? carName;
+  String? carNumber;
+  String? idNumber;
 
-  UserDetailScreen({
-    this.longitute,
-    this.id,
-    this.nam,
-    this.img,
-    this.phone,
-    this.email,
-    this.latitetute,
-  });
+  UserDetailScreen(
+      {this.longitute,
+      this.id,
+      this.nam,
+      this.img,
+      this.phone,
+      this.email,
+      this.latitetute,
+      this.carName,
+      this.carNumber,
+      this.idNumber});
 
   @override
   State<UserDetailScreen> createState() => _UserDetailScreenState();
@@ -31,6 +41,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
   double? longitute;
   List<Placemark>? placemark;
   String location = '';
+  UserData? userdata;
 
   getDecodeLocation() {
     setState(() {
@@ -74,6 +85,41 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
             fontWeight: FontWeight.w600,
           ),
         ),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              final FirebaseAuth auth = FirebaseAuth.instance;
+              final User user = auth.currentUser!;
+              await FirebaseFirestore.instance
+                  .collection('Request')
+                  .doc(widget.id)
+                  .set({
+                "patientName": userdata!.fname,
+                "patientAdressLatitue": userdata!.latituelocation,
+                "patientAdressLongitue": userdata!.longitudelocation,
+                "PatientPhoneNumber": userdata!.phone,
+                'DriverName': widget.nam,
+                "DriverPhone": widget.phone,
+                "DriverIdNumber": widget.idNumber,
+                'RequestId': widget.id,
+              }).then((value) {
+                Navigator.pop(context);
+              });
+              AlertDialogWidget.showSnakcbar(context, 'Request Has been sent');
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'Request',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
       body: Center(
         child: Column(
@@ -89,6 +135,60 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
               fit: BoxFit.cover,
               height: 100.h,
               width: 100.h,
+            ),
+            SizedBox(
+              height: 25.h,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 12.0, right: 12),
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: Colors.black,
+                      width: 1,
+                    )),
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      '${widget.nam}',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 22.sp,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 25.h,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 12.0, right: 12),
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: Colors.black,
+                      width: 1,
+                    )),
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      '${widget.carName}',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 22.sp,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
             SizedBox(
               height: 25.h,
@@ -188,7 +288,6 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                 color: Colors.red,
                               ),
                             ),
-
                             IconButton(
                               onPressed: () {
                                 _makePhoneCall(widget.phone!);
@@ -199,8 +298,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                               ),
                             ),
                           ],
-                        ), 
-
+                        ),
                       ],
                     ),
                   ),
@@ -239,6 +337,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
       ),
     );
   }
+
   //for phone call
   Future<void> _makePhoneCall(String phoneNumber) async {
     final Uri launchUri = Uri(
@@ -252,7 +351,8 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
 
   openWhatsApp() async {
     var whatsapp = widget.phone;
-    var androidUrl = "whatsapp://send?phone=$whatsapp&text=Share Your Current Location";
+    var androidUrl =
+        "whatsapp://send?phone=$whatsapp&text=Share Your Current Location";
     try {
       await launchUrl(Uri.parse(androidUrl));
     } catch (e) {

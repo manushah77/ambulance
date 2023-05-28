@@ -1,5 +1,7 @@
+import 'package:embulance/models/admin_model.dart';
 import 'package:embulance/screens/admin_home_screens/bottombar/admin_bottom_nav_bar.dart';
 import 'package:embulance/screens/admin_login_screen/admin_detail_screen.dart';
+import 'package:embulance/screens/admin_login_screen/admin_second_detail.dart';
 import 'package:embulance/screens/login_screen/detail_screen.dart';
 import 'package:embulance/screens/widgets/auth_work.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -25,6 +27,8 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
   final formKey = GlobalKey<FormState>();
   TextEditingController phoneController = TextEditingController();
   UserData? userdata;
+
+  AdminData? adminData;
 
   @override
   Widget build(BuildContext context) {
@@ -211,7 +215,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
           await AuthWork.createDriver().then((value) {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => AdminBottomBar()),
+              MaterialPageRoute(builder: (context) => AdminSecondDeatilScreen()),
             );
           });
         }
