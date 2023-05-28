@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class UserDetailScreen extends StatefulWidget {
   String? img;
@@ -36,7 +37,6 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
       latitue = widget.latitetute;
       longitute = widget.longitute;
       getLocation();
-
     });
   }
 
@@ -46,10 +46,8 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
       longitute!.toDouble(),
     );
     setState(() {
-      location = '${placemark![0].street}, ${placemark![0]
-          .subAdministrativeArea} , ${placemark![0].locality}, ${placemark![0]
-          .administrativeArea}, ${placemark![0].country}';
-
+      location =
+          '${placemark![0].street}, ${placemark![0].subAdministrativeArea} , ${placemark![0].locality}, ${placemark![0].administrativeArea}, ${placemark![0].country}';
     });
   }
 
@@ -69,7 +67,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         title: Text(
-          'PATIENT DETAIL',
+          'DETAIL',
           style: TextStyle(
             color: Colors.black,
             fontSize: 29.sp,
@@ -163,15 +161,47 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                 child: Center(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      widget.phone!.isEmpty
-                          ? 'Not in Record'
-                          : '${widget.phone}',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 22.sp,
-                        fontWeight: FontWeight.w400,
-                      ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          widget.phone!.isEmpty
+                              ? 'Not in Record'
+                              : '${widget.phone}',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 22.sp,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 25.w,
+                        ),
+                        Row(
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                openWhatsApp();
+                              },
+                              icon: Icon(
+                                Icons.message,
+                                color: Colors.red,
+                              ),
+                            ),
+
+                            IconButton(
+                              onPressed: () {
+                                _makePhoneCall(widget.phone!);
+                              },
+                              icon: Icon(
+                                Icons.call,
+                                color: Colors.red,
+                              ),
+                            ),
+                          ],
+                        ), 
+
+                      ],
                     ),
                   ),
                 ),
@@ -193,9 +223,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      placemark == null
-                          ? 'Your Adress'
-                          : '${location}',
+                      placemark == null ? 'Your Adress' : '${location}',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 22.sp,
@@ -210,5 +238,36 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
         ),
       ),
     );
+  }
+  //for phone call
+  Future<void> _makePhoneCall(String phoneNumber) async {
+    final Uri launchUri = Uri(
+      scheme: 'tel',
+      path: phoneNumber,
+    );
+    await launchUrl(launchUri);
+  }
+
+  //for whatsapp
+
+  openWhatsApp() async {
+    var whatsapp = widget.phone;
+    var androidUrl = "whatsapp://send?phone=$whatsapp&text=Share Your Current Location";
+    try {
+      await launchUrl(Uri.parse(androidUrl));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: Colors.red,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(7),
+        ),
+        content: Text(
+          "Please Install WHATSAPP",
+          style: TextStyle(color: Colors.white, fontSize: 12),
+        ),
+        duration: Duration(seconds: 2),
+      ));
+    }
   }
 }
