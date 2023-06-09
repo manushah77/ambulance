@@ -7,18 +7,18 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1093873313986:android:67eb1fa4a60026fb90335b",
+        "mobilesdk_app_id": "1:1093873313986:android:558546f64d41306e90335b",
         "android_client_info": {
           "package_name": "com.example.embulance"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1093873313986-lv780g7np9t208tph4guoej9icmckovq.apps.googleusercontent.com",
+          "client_id": "1093873313986-1lo3eana5ai50g60qemtmkm7cffk1uqn.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.embulance",
-            "certificate_hash": "563de7a4334b22b88981771f314e4f0caf4a6c42"
+            "certificate_hash": "1fbfd831f6987db1b0ab47a2076c54ee940f3f34"
           }
         },
         {
