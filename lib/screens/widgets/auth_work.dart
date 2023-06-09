@@ -102,6 +102,9 @@ class AuthWork {
 
   // for checking if user exists or not?
   static Future<bool> userExists() async {
+    return (await firestore.collection('user').doc(user.uid).get()).exists;
+  }
+  static Future<bool> DriverExist() async {
     return (await firestore.collection('Driver').doc(user.uid).get()).exists;
   }
 }

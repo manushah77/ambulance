@@ -43,6 +43,12 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
   String location = '';
   UserData? userdata;
 
+  String? patientName;
+  double? patienLatitue;
+  double? patientLongitute;
+  String? patientId;
+  String? patientPhone;
+
   getDecodeLocation() {
     setState(() {
       latitue = widget.latitetute;
@@ -61,12 +67,35 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
           '${placemark![0].street}, ${placemark![0].subAdministrativeArea} , ${placemark![0].locality}, ${placemark![0].administrativeArea}, ${placemark![0].country}';
     });
   }
+  final user = FirebaseAuth.instance.currentUser!;
+
+  getUserData() async {
+    QuerySnapshot res = await FirebaseFirestore.instance
+        .collection('user')
+        .where('id', isEqualTo: user.uid)
+        .get();
+    if (res.docs.isNotEmpty) {
+      setState(() {
+        userdata =
+            UserData.fromMap(res.docs.first.data() as Map<String, dynamic>);
+        patienLatitue = userdata!.latituelocation;
+        patientLongitute = userdata!.longitudelocation;
+        patientName = userdata!.fname;
+        patientId = userdata!.id;
+        patientPhone = userdata!.phone;
+      });
+    }
+
+
+  }
+
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     getDecodeLocation();
+    getUserData();
   }
 
   @override
@@ -88,25 +117,30 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
         actions: [
           TextButton(
             onPressed: () async {
-              final FirebaseAuth auth = FirebaseAuth.instance;
-              final User user = auth.currentUser!;
+              // final User user = auth.currentUser!;
               await FirebaseFirestore.instance
                   .collection('Request')
-                  .doc(widget.id)
+                  .doc(patientId)
                   .set({
-                "patientName": userdata!.fname,
-                "patientAdressLatitue": userdata!.latituelocation,
-                "patientAdressLongitue": userdata!.longitudelocation,
-                "PatientPhoneNumber": userdata!.phone,
+                "patientName": patientName.toString(),
+                "patientAdressLatitue": patienLatitue,
+                "patientAdressLongitue": patientLongitute,
+                "PatientPhoneNumber": patientPhone,
                 'DriverName': widget.nam,
                 "DriverPhone": widget.phone,
                 "DriverIdNumber": widget.idNumber,
                 'RequestId': widget.id,
+                'PatientId' : patientId,
+                'DriverLatitute' : widget.latitetute,
+                'DriverLongitute' : widget.longitute,
+                'DriverPicture' : widget.img,
+
               }).then((value) {
                 Navigator.pop(context);
               });
               AlertDialogWidget.showSnakcbar(context, 'Request Has been sent');
             },
+
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(

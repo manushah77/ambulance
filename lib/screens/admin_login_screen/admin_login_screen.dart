@@ -206,7 +206,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
     _googleSignIn().then((user) async {
       Navigator.pop(context);
       if (user != null) {
-        if ((await AuthWork.userExists())) {
+        if ((await AuthWork.DriverExist())) {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => AdminBottomBar()),

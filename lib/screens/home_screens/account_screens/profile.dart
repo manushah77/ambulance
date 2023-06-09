@@ -1,10 +1,16 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:embulance/screens/home_screens/account_screens/account.dart';
+import 'package:embulance/screens/home_screens/bottombar/bottom_nav_bar.dart';
 import 'package:embulance/screens/home_screens/home.dart';
 import 'package:embulance/screens/widgets/button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../models/user_data.dart';
 import '../../widgets/custom_text_field.dart';
@@ -35,6 +41,36 @@ class _UserProfileState extends State<UserProfile> {
   final _formKey = GlobalKey<FormState>();
 
 
+  final picker = ImagePicker();
+  File? _image;
+  Future pickImage() async {
+    var pickImage = await picker.getImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickImage != null) {
+        _image = File(pickImage.path);
+      } else {
+        print('no image selected');
+      }
+    });
+  }
+
+  Future<String> uploadFile(File _image) async {
+    String downloadURL;
+    String postId = DateTime.now().millisecondsSinceEpoch.toString();
+    Reference ref = FirebaseStorage.instance
+        .ref()
+        .child("images")
+        .child("post_$postId.png");
+    await ref.putFile(_image);
+    downloadURL = await ref.getDownloadURL();
+    return downloadURL;
+  }
+
+  uploadToFirebase() async {
+    FirebaseFirestore db = await FirebaseFirestore.instance;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -61,14 +97,49 @@ class _UserProfileState extends State<UserProfile> {
                 SizedBox(
                   height: 30.h,
                 ),
-                Container(
-                  height: 170.h,
-                  width: 170.w,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.withOpacity(0.2),
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                        image: NetworkImage('${widget.img}'), fit: BoxFit.cover),
+                InkWell(
+                  onTap: () async {
+                    pickImage().then((value) async {
+                      String url = await uploadFile(_image!);
+                      FirebaseFirestore.instance
+                          .collection('user')
+                          .doc(widget.id)
+                          .update({
+                        "image": url,
+                      });
+                      uploadFile(_image!).then((value) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BottomBar(),
+                          ),
+                        );
+                        Fluttertoast.showToast(
+                            msg: "Profile Picture Updated ..!",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                            fontSize: 16.0);
+                      });
+                    });
+                  },
+                  child: Container(
+                    width: 150.w,
+                    height: 150.h,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                          width: 2, color: const Color(0xFFE4DFDF)),
+                      image: DecorationImage(
+                        image: widget.img != null
+                            ? NetworkImage( widget.img.toString())
+                            : NetworkImage(
+                            '${widget.img}'),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(

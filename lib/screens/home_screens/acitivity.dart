@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:embulance/screens/home_screens/bottombar/bottom_nav_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geocoding/geocoding.dart';
 
+import '../../models/request_model.dart';
 import '../../models/user_data.dart';
 
 class ActivityScreen extends StatefulWidget {
@@ -15,12 +17,11 @@ class ActivityScreen extends StatefulWidget {
 
 class _ActivityScreenState extends State<ActivityScreen> {
   // UserData? userData;
-  List<UserData> userdata = [];
+  List<RequestData> reqData = [];
 
   double? latitue;
   double? longitute;
   List<Placemark>? placemark;
-
 
   final user = FirebaseAuth.instance.currentUser!;
   String name = '';
@@ -28,26 +29,33 @@ class _ActivityScreenState extends State<ActivityScreen> {
   String phone = '';
   String email = '';
 
-  getUserData() async {
-    QuerySnapshot res = await FirebaseFirestore.instance
-        .collection('Driver')
-        // .where('id', isEqualTo: user.uid)
-        .get();
-    if (res.docs.isNotEmpty) {
-      setState(() {
-        userdata = res.docs
-            .map((e) => UserData.fromMap(e.data() as Map<String, dynamic>)).toList();
-        latitue = userdata[0].latituelocation;
-        longitute = userdata[0].longitudelocation;
-        getLocation();
-      });
-    }
-  }
   getLocation() async {
     placemark = await placemarkFromCoordinates(
       latitue!.toDouble(),
       longitute!.toDouble(),
     );
+  }
+
+  getUserData() async {
+    QuerySnapshot res = await FirebaseFirestore.instance
+        .collection('Request')
+        .where('PatientId', isEqualTo: user.uid)
+        // .where('id', isEqualTo: user.uid)
+        .get();
+    if (res.docs.isNotEmpty) {
+      setState(() {
+        reqData = res.docs
+            .map((e) => RequestData.fromMap(e.data() as Map<String, dynamic>))
+            .toList();
+        name = reqData[0].DriverName!;
+        img = reqData[0].DriverPicture!;
+        phone = reqData[0].DriverPhone!;
+        latitue = reqData[0].DriverLatitute;
+        longitute = reqData[0].DriverLongitute;
+
+        getLocation();
+      });
+    }
   }
 
   @override
@@ -80,42 +88,42 @@ class _ActivityScreenState extends State<ActivityScreen> {
             SizedBox(
               height: 30.h,
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 22.0, right: 22),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Past',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 22.sp,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  Container(
-                    height: 30.h,
-                    width: 30.w,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.withOpacity(0.2),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
-                      child: Icon(
-                        Icons.filter_list,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 20.h,
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.only(left: 22.0, right: 22),
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //     children: [
+            //       Text(
+            //         'Past',
+            //         style: TextStyle(
+            //           color: Colors.black,
+            //           fontSize: 22.sp,
+            //           fontWeight: FontWeight.w400,
+            //         ),
+            //       ),
+            //       Container(
+            //         height: 30.h,
+            //         width: 30.w,
+            //         decoration: BoxDecoration(
+            //           color: Colors.grey.withOpacity(0.2),
+            //           shape: BoxShape.circle,
+            //         ),
+            //         child: Center(
+            //           child: Icon(
+            //             Icons.filter_list,
+            //             color: Colors.black,
+            //           ),
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
+            // SizedBox(
+            //   height: 20.h,
+            // ),
             Expanded(
               child: ListView.builder(
-                itemCount: userdata.length,
+                itemCount: reqData.length,
                 itemBuilder: (context, index) {
                   return ListTile(
                     leading: Container(
@@ -127,7 +135,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
                       ),
                       child: Center(
                         child: Image.network(
-                          '${userdata[index].image}',
+                          '${reqData[index].DriverPicture}',
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -149,7 +157,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
                           height: 8.h,
                         ),
                         Text(
-                          'Driver Name = ${userdata[index].fname}',
+                          'Driver Name = ${reqData[index].DriverName}',
                           style: TextStyle(
                             color: Colors.black54,
                             fontSize: 13.sp,
@@ -169,20 +177,35 @@ class _ActivityScreenState extends State<ActivityScreen> {
                         // ),
                       ],
                     ),
-                    trailing: Container(
-                      height: 30.h,
-                      width: 80.w,
-                      decoration: BoxDecoration(
-                        color: Colors.grey.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: Center(
-                        child: Text(
-                          '1000 Rs',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
+                    trailing: InkWell(
+                      onTap: () async {
+                        await FirebaseFirestore.instance
+                            .collection('Request')
+                            .doc(FirebaseAuth.instance.currentUser!.uid)
+                            .delete();
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BottomBar(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        height: 30.h,
+                        width: 80.w,
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Cancle Ride',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
                         ),
                       ),

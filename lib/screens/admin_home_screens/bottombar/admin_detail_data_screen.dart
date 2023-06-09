@@ -1,7 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../widgets/alert_dialog_widget.dart';
 
 class AdminDataDetailScreen extends StatefulWidget {
   String? img;
@@ -47,7 +51,7 @@ class _AdminDataDetailScreenState extends State<AdminDataDetailScreen> {
     );
     setState(() {
       location =
-      '${placemark![0].street}, ${placemark![0].subAdministrativeArea} , ${placemark![0].locality}, ${placemark![0].administrativeArea}, ${placemark![0].country}';
+          '${placemark![0].street}, ${placemark![0].subAdministrativeArea} , ${placemark![0].locality}, ${placemark![0].administrativeArea}, ${placemark![0].country}';
     });
   }
 
@@ -74,6 +78,31 @@ class _AdminDataDetailScreenState extends State<AdminDataDetailScreen> {
             fontWeight: FontWeight.w600,
           ),
         ),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              final User user = FirebaseAuth.instance.currentUser!;
+              await FirebaseFirestore.instance
+                  .collection('Approve')
+                  .doc(widget.id)
+                  .set({
+                "patientName": widget.nam,
+                "patientAdressLatitue": widget.latitetute,
+                "patientAdressLongitue": widget.longitute,
+                "PatientPhoneNumber": widget.phone,
+                'DriverName': user.displayName,
+                "DriverPhone": user.phoneNumber,
+
+
+              }).then((value) {
+                Navigator.pop(context);
+              });
+              AlertDialogWidget.showSnakcbar(context, 'Request Has been Approved,Driver is on Way');
+            },
+
+            child: Text('Approve'),
+          ),
+        ],
       ),
       body: Center(
         child: Column(
@@ -188,7 +217,6 @@ class _AdminDataDetailScreenState extends State<AdminDataDetailScreen> {
                                 color: Colors.red,
                               ),
                             ),
-
                             IconButton(
                               onPressed: () {
                                 _makePhoneCall(widget.phone!);
@@ -200,7 +228,6 @@ class _AdminDataDetailScreenState extends State<AdminDataDetailScreen> {
                             ),
                           ],
                         ),
-
                       ],
                     ),
                   ),
@@ -239,6 +266,7 @@ class _AdminDataDetailScreenState extends State<AdminDataDetailScreen> {
       ),
     );
   }
+
   //for phone call
   Future<void> _makePhoneCall(String phoneNumber) async {
     final Uri launchUri = Uri(
@@ -252,7 +280,8 @@ class _AdminDataDetailScreenState extends State<AdminDataDetailScreen> {
 
   openWhatsApp() async {
     var whatsapp = widget.phone;
-    var androidUrl = "whatsapp://send?phone=$whatsapp&text=Share Your Current Location";
+    var androidUrl =
+        "whatsapp://send?phone=$whatsapp&text=Share Your Current Location";
     try {
       await launchUrl(Uri.parse(androidUrl));
     } catch (e) {

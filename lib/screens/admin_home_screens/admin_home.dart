@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geocoding/geocoding.dart';
+import '../../models/request_model.dart';
 import '../../models/user_data.dart';
 import 'admin_map_page.dart';
 
@@ -18,7 +19,7 @@ class AdminHomeScreen extends StatefulWidget {
 
 class _AdminHomeScreenState extends State<AdminHomeScreen> {
   UserData? userData;
-  List<UserData> userdata = [];
+  List<RequestData> userdata = [];
 
   double? latitue;
   double? longitute;
@@ -48,7 +49,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
     if (rest.docs.isNotEmpty) {
       setState(() {
         userdata = rest.docs
-            .map((e) => UserData.fromMap(e.data() as Map<String, dynamic>))
+            .map((e) => RequestData.fromMap(e.data() as Map<String, dynamic>))
             .toList();
         latitue = userData!.latituelocation;
         longitute = userData!.longitudelocation;
@@ -187,13 +188,13 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => AdminDataDetailScreen(
-                                nam: userdata[indexx].fname,
-                                img: userdata[indexx].image,
-                                latitetute: userdata[indexx].latituelocation,
-                                longitute: userdata[indexx].longitudelocation,
-                                email: userdata[indexx].email,
-                                phone: userdata[indexx].phone,
-                                id: userdata[indexx].id,
+                                nam: userdata[indexx].patientName,
+                                img: userdata[indexx].DriverPicture,
+                                latitetute: userdata[indexx].patientAdressLatitue,
+                                longitute: userdata[indexx].patientAdressLongitue,
+                                email: userdata[indexx].patientName,
+                                phone: userdata[indexx].PatientPhoneNumber,
+                                id: userdata[indexx].PatientId,
                               ),
                             ),
                           );
@@ -214,7 +215,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     Image.network(
-                                      '${userdata[indexx].image}',
+                                      '${userdata[indexx].DriverPicture}',
                                       height: 65.h,
                                       width: 65.w,
                                     ),
@@ -234,7 +235,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                     ),
                                     Expanded(
                                       child: Text(
-                                        '${userdata[indexx].fname}',
+                                        '${userdata[indexx].patientName}',
                                         style: TextStyle(
                                           color: Colors.black,
                                           fontSize: 16.sp,
@@ -247,31 +248,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                 SizedBox(
                                   height: 10.h,
                                 ),
-                                // Wrap(
-                                //   children: [
-                                //     Text(
-                                //       'Address is: ',
-                                //       style: TextStyle(
-                                //         color: Colors.black,
-                                //         fontSize: 16.sp,
-                                //         fontWeight: FontWeight.w400,
-                                //       ),
-                                //     ),
-                                //     SizedBox(
-                                //       width: 15.w,
-                                //     ),
-                                //     Text(
-                                //       placemarkOne == null
-                                //           ? ''
-                                //           : '${placemarkOne![indexx].street} ${placemarkOne![indexx].subAdministrativeArea} , ${placemarkOne![indexx].locality}, ${placemarkOne![indexx].administrativeArea}, ${placemarkOne![indexx].country}',
-                                //       style: TextStyle(
-                                //         color: Colors.black,
-                                //         fontSize: 16.sp,
-                                //         fontWeight: FontWeight.w400,
-                                //       ),
-                                //     ),
-                                //   ],
-                                // ),
                               ],
                             )),
                       ),

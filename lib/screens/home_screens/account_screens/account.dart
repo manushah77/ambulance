@@ -1,12 +1,17 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:embulance/screens/home_screens/account_screens/profile.dart';
 import 'package:embulance/screens/login_screen/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../models/user_data.dart';
 import '../../welcome_screen.dart';
+import 'package:image_picker/image_picker.dart';
+
 
 class AccountScreen extends StatefulWidget {
   AccountScreen({super.key});
@@ -39,6 +44,37 @@ class _AccountScreenState extends State<AccountScreen> {
       });
     }
   }
+
+  final picker = ImagePicker();
+  File? _image;
+  Future pickImage() async {
+    var pickImage = await picker.getImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickImage != null) {
+        _image = File(pickImage.path);
+      } else {
+        print('no image selected');
+      }
+    });
+  }
+
+  Future<String> uploadFile(File _image) async {
+    String downloadURL;
+    String postId = DateTime.now().millisecondsSinceEpoch.toString();
+    Reference ref = FirebaseStorage.instance
+        .ref()
+        .child("images")
+        .child("post_$postId.png");
+    await ref.putFile(_image);
+    downloadURL = await ref.getDownloadURL();
+    return downloadURL;
+  }
+
+  uploadToFirebase() async {
+    FirebaseFirestore db = await FirebaseFirestore.instance;
+  }
+
 
   @override
   void initState() {
